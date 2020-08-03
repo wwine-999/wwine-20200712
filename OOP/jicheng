@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+
+class Person:
+
+    def say(self):
+        print('h1')
+
+
+class Student(Person):
+
+    pass
+
+
+s = Student()
+
+s.say()

@@ -1,0 +1,61 @@
+# iptables防火墙
+
+# 服务器其他端口都关闭了，只打开了我们必须对外开放的端口
+yum install iptables iptables-services -y    # 安装iptables和启动文件
+
+systemctl status iptables    # 查看iptables的运行状态
+
+iptables -L    # 列出iptables防火墙策略
+
+iptables -L --line-number    # 加序列号输出
+
+Chain INPUT    # 进
+Chain OUTPUT    # 出
+ACCEPT     # 表示允许通过
+DROP    # 不允许通过
+
+# 把默认入的策略改成DROP
+iptables -P INPUT DROP    # 外面所有都进入不了服务器
+
+iptables -P INPUT ACCEPT    # 允许所有进入服务器
+
+清空已有策略：
+	iptables -F  
+	iptables -X
+	iptables -Z
+	
+iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT    # 允许访问22端口
+
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT    # 允许访问22端口
+
+iptables -A INPUT -s 127.0.0.1 -j ACCEPT    # 允许自己访问自己，添加两条规则自己ip地址和127.0.0.1  
+
+
+target    # 目标
+prot/protocol    # 协议
+opt    # 选择
+source    # 源    -s/source表示地址来源
+destination    # 目标    -d/destination表示目标地址
+
+
+iptables -A OUTPUT -d 47.104.202.34 -j DROP    # 不允许访问ip
+
+iptables -A INPUT -d 192.168.124.21 -p tcp --dport 22 -j DROP    # 不允许ip访问   有优先级
+iptables -I INPUT 1 -s 192.168.124.21 -p tcp --dport 22 -j DROP    # 插入方式
+
+iptables -D INPUT 序列号    # 删除 策略
+
+service iptables save    # 保存策略
+
+# 重启iptables
+service iptables restart
+systemctl restart iptables
+
+# 启动iptables
+systemctl start iptables
+service iptables start
+
+# 关闭iptables
+systemctl stop iptables
+service iptables stop
+
